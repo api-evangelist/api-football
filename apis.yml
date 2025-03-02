@@ -5,7 +5,7 @@ apis:
   - aid: api-football:api-football
     name: API-Football
     tags:
-      - API
+      - Sports
     humanURL: ' https://www.api-football.com/'
     properties:
       - url: ' https://www.api-football.com/'
