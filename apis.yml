@@ -9,7 +9,7 @@ description: >-
   volleyball, and handball. Data is returned in JSON format and updates every
   15 seconds during live matches.
 type: Index
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
   - Sports
   - Football
