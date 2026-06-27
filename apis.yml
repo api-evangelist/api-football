@@ -52,7 +52,7 @@ common:
     url: https://www.api-football.com/documentation-v3
   - type: Pricing
     url: https://www.api-football.com/pricing
-  - type: SignUp
+  - type: Signup
     url: https://dashboard.api-football.com/register
   - type: Login
     url: https://dashboard.api-football.com/login
