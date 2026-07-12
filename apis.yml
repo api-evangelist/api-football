@@ -46,6 +46,8 @@ apis:
       - type: RateLimits
         url: https://www.api-football.com/documentation-v3#section/Rate-limit
 common:
+  - type: DomainSecurity
+    url: security/api-football-domain-security.yml
   - type: Website
     url: https://www.api-football.com/
   - type: Documentation
