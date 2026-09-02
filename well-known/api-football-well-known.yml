@@ -1,0 +1,109 @@
+specification: API Commons Well-Known
+specificationVersion: '0.1'
+provider: API Football
+providerId: api-football
+generated: '2026-09-02'
+modified: '2026-09-02'
+method: probed
+source: >-
+  Direct unauthenticated HTTP probes of the conventional /.well-known/ paths on
+  every host in this provider's surface, run 2026-09-02 with a browser
+  User-Agent.
+description: >-
+  Well-known document probe for API-Football / API-Sports. NOTHING WAS SERVED.
+  Every conventional /.well-known/ path returned 404 on the marketing/docs host
+  (www.api-football.com), the corporate host (api-sports.io) and the account
+  host (dashboard.api-football.com). The API host (v3.football.api-sports.io)
+  answers EVERY path — including nonsense paths — with the same HTTP 403 JSON
+  "Missing application key" envelope, so its 403s are a catch-all and prove
+  nothing either way. No WellKnown or SecurityTxt pointer is wired into
+  apis.yml, because a recorded absence must not be scored as a presence.
+control_probe:
+  note: >-
+    https://v3.football.api-sports.io/zzz-nonsense-probe-12345 returns byte-for-byte
+    the same 403 body as /.well-known/agent-card.json, so the API host does not
+    discriminate between real and invented paths. Every API-host row below is
+    therefore indeterminate, not a hit and not a clean miss.
+  url: https://v3.football.api-sports.io/zzz-nonsense-probe-12345
+  status: 403
+hosts:
+  - host: www.api-football.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 404
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+  - host: api-sports.io
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 404
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+  - host: dashboard.api-football.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+  - host: v3.football.api-sports.io
+    note: >-
+      Catch-all host. Treat every status below as indeterminate; see control_probe.
+    documents:
+      - path: /.well-known/security.txt
+        status: 403
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 403
+        file: null
+llms_txt:
+  - url: https://www.api-football.com/llms.txt
+    status: 404
+  - url: https://api-sports.io/llms.txt
+    status: 404
+  - url: https://v3.football.api-sports.io/llms.txt
+    status: 403
+    note: catch-all envelope, indeterminate
+summary:
+  hosts_probed: 4
+  documents_probed: 18
+  documents_served: 0
+  security_txt: false
+  api_catalog: false
+  agent_card: false
+  ai_plugin: false
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com

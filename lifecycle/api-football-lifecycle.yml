@@ -1,0 +1,89 @@
+specification: API Commons Lifecycle
+specificationVersion: '0.1'
+provider: API Football
+providerId: api-football
+generated: '2026-09-02'
+modified: '2026-09-02'
+method: probed
+source: >-
+  Host and path probes run 2026-09-02 against v3.football.api-sports.io,
+  www.api-football.com, api-sports.io and the conventional status-page hostnames.
+description: >-
+  Versioning, deprecation and operational-transparency posture for API-Football.
+  The picture is a stable, long-lived v3 surface with NO published deprecation
+  policy, NO SLA and NO status page — the three artefacts an integrator needs to
+  plan around change and outage. Absences below are probed, not assumed.
+versioning:
+  scheme: major-in-host-and-path
+  current: v3
+  detail: >-
+    The direct channel carries the major version in the hostname
+    (v3.football.api-sports.io); the RapidAPI channel carries it in the path
+    (/v3/). There is no header or query-parameter version negotiation observable
+    on the wire, and no date-based version pinning.
+  verified: true
+  previous_versions:
+    - version: v2
+      status: unknown
+      note: >-
+        A v2 existed historically (the docs route is /documentation-v3, implying a
+        /documentation-v2 predecessor). Its retirement date and any migration
+        guidance could not be read — the docs host answers our crawler with a
+        Cloudflare managed challenge.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  detail: >-
+    No RFC 8594 `Sunset` header and no `Deprecation` header appeared on any probed
+    response, and no deprecation-policy page was found on the site. No
+    `Deprecation` pointer is wired into apis.yml.
+  verified: true
+  deprecated_operations: []
+  deprecated_operations_note: >-
+    Cannot be derived: the provider's OpenAPI is published but not retrievable
+    (see conventions/api-football-conventions.yml → contract).
+sla:
+  published: false
+  detail: No service-level agreement or uptime commitment was found on the public site.
+  verified: false
+status_page:
+  published: false
+  detail: >-
+    There is no status page. `status.api-sports.io` and `status.api-football.com`
+    do not resolve, `www.api-football.com/status` and `api-sports.io/status` are
+    not routes, and `api-sports.statuspage.io` answers 200 only to 302 the caller
+    to statuspage.io's own marketing site — an unclaimed subdomain, not a live
+    Statuspage. No `StatusPage` pointer is wired into apis.yml.
+  verified: true
+  probes:
+    - url: https://status.api-sports.io/
+      status: 0
+      note: DNS/connection failure
+    - url: https://status.api-football.com/
+      status: 0
+      note: DNS/connection failure
+    - url: https://api-sports.statuspage.io/api/v2/status.json
+      status: 200
+      note: 'body is `You are being redirected` to www.statuspage.io — not a real status page'
+    - url: https://www.api-football.com/status
+      status: 403
+      note: not a route; Cloudflare challenge on the marketing host
+announcement_channel:
+  kind: blog
+  url: https://www.api-football.com/news/
+  detail: >-
+    Product and coverage announcements are published to the site's news section
+    rather than to a dated, machine-readable changelog. There is a news sitemap at
+    https://www.api-football.com/news/sitemap.xml. No `changelog/` artifact is
+    written because no dated changelog with version entries exists to record.
+  verified: true
+data_freshness:
+  detail: >-
+    The provider advertises live match data refreshed every 15 seconds, and its
+    own widgets refuse a `data-refresh` interval below 15 seconds. This is the
+    operational cadence an integrator should design against.
+  verified: true
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com

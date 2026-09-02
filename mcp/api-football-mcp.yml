@@ -1,0 +1,70 @@
+specification: API Commons MCP
+specificationVersion: '0.1'
+provider: API Football
+providerId: api-football
+generated: '2026-09-02'
+modified: '2026-09-02'
+method: searched
+status: none
+source: >-
+  npm registry search and package metadata (registry.npmjs.org), GitHub org
+  probes, and /.well-known probes across every API-Football / API-Sports host,
+  run 2026-09-02.
+description: >-
+  API-Sports ships NO Model Context Protocol server — no hosted endpoint, no
+  first-party stdio package, no agent card, no llms.txt. Two community MCP
+  servers wrap the public REST API; neither is the provider's and neither is
+  wired as a provider capability in apis.yml. This file exists to record the
+  absence with its evidence, not to claim an agent surface.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: searched
+  note: >-
+    No first-party MCP server exists to reach, so there is no endpoint and no
+    install line. No candidate tool list was derived either: deriving one requires
+    an OpenAPI, and the provider's OpenAPI
+    (https://www.api-football.com/public/doc/openapi.yaml) is served to our
+    crawler as a Cloudflare managed challenge. Inventing tool names from the
+    endpoint paths we could confirm would fabricate an inputSchema we have never
+    seen.
+first_party: false
+tools: []
+third_party_servers:
+  - name: '@pipeworx/mcp-api-football'
+    registry: npm
+    version: 0.1.0
+    published: '2026-06-26'
+    repository: https://github.com/pipeworx-io/mcp-api-football
+    license: MIT
+    mode: local-stdio
+    official: false
+    note: >-
+      Community server. Requires the consumer's own API-Football key; it is a
+      wrapper over the public REST API, not a provider-operated surface.
+  - name: api-football-mcp
+    registry: npm
+    version: 1.0.0
+    published: '2025-11-15'
+    license: MIT
+    mode: local-stdio
+    official: false
+    note: Community server; no repository declared in registry metadata.
+evidence:
+  - url: https://www.api-football.com/.well-known/agent-card.json
+    status: 404
+  - url: https://api-sports.io/.well-known/agent-card.json
+    status: 404
+  - url: https://www.api-football.com/.well-known/ai-plugin.json
+    status: 404
+  - url: https://www.api-football.com/llms.txt
+    status: 404
+  - url: https://api.github.com/orgs/api-sports-io
+    status: 404
+    note: no public source organisation to host a server
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com

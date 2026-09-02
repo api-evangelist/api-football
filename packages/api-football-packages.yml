@@ -1,0 +1,121 @@
+specification: API Commons Packages
+specificationVersion: '0.1'
+provider: API Football
+providerId: api-football
+generated: '2026-09-02'
+modified: '2026-09-02'
+method: searched
+source: >-
+  Registry queries run 2026-09-02 against registry.npmjs.org (search + package
+  metadata), pypi.org/pypi/<name>/json, and api.github.com/orgs/<name>.
+description: >-
+  Client-library inventory for API-Football. THE HEADLINE FINDING IS AN ABSENCE:
+  API-Sports publishes NO first-party SDK in any package registry, and operates
+  no public GitHub organisation. Every package below is community-authored. No
+  `SDKs` pointer is wired into apis.yml, because sdk_count must not be credited
+  from third-party wrappers.
+official_sdk_count: 0
+first_party:
+  github_org: none
+  detail: >-
+    api.github.com/orgs/{api-sports-io, apisports, api-football} all return 404 —
+    there is no public source organisation. The only first-party distributed code
+    we found is the browser widget bundle on the provider's own CDN, which is
+    catalogued in components/api-football-components.yml rather than here.
+  probes:
+    - url: https://api.github.com/orgs/api-sports-io
+      status: 404
+    - url: https://api.github.com/orgs/apisports
+      status: 404
+    - url: https://api.github.com/orgs/api-football
+      status: 404
+    - url: https://pypi.org/pypi/api-football/json
+      status: 404
+    - url: https://pypi.org/pypi/api-sports/json
+      status: 404
+packages:
+  - name: api-football-sdk
+    registry: npm
+    url: https://www.npmjs.com/package/api-football-sdk
+    language: TypeScript
+    official: false
+    license: MIT
+    version: 1.1.0
+    published: '2026-06-19'
+    description: Fully typed API-Football v3 SDK.
+    note: >-
+      Most recently maintained community wrapper found. No repository is declared
+      in its registry metadata, so its provenance cannot be traced to a source
+      tree.
+  - name: '@sudobility/sports_api_client'
+    registry: npm
+    url: https://www.npmjs.com/package/@sudobility/sports_api_client
+    language: TypeScript
+    official: false
+    license: BUSL-1.1
+    version: 1.0.28
+    published: '2026-03-19'
+    repository: https://github.com/johnqh/sports_api_client
+    description: React / React Native client library for API-Football v3.
+    note: >-
+      Source-available under BUSL-1.1, not an open-source licence — check terms
+      before adopting.
+  - name: api-football-client
+    registry: npm
+    url: https://www.npmjs.com/package/api-football-client
+    language: JavaScript
+    official: false
+    license: ISC
+    version: 1.0.47
+    published: '2021-10-16'
+    repository: https://github.com/alexrr2iggs/api-football-client
+    description: Node API-Football client.
+    note: >-
+      Last published 2021 — nearly five years stale against a v3 surface that has
+      shipped continuously since. Treat as abandoned.
+  - name: api-football
+    registry: npm
+    url: https://www.npmjs.com/package/api-football
+    language: JavaScript
+    official: false
+    license: MIT
+    version: 1.0.1
+    published: '2020-03-04'
+    repository: https://github.com/yuledev/api-football
+    description: API-Football API wrapper.
+    note: >-
+      Holds the obvious canonical package name on npm but was last published in
+      2020 and is not the provider's. Abandoned.
+  - name: '@pipeworx/mcp-api-football'
+    registry: npm
+    url: https://www.npmjs.com/package/@pipeworx/mcp-api-football
+    language: TypeScript
+    kind: mcp-server
+    official: false
+    license: MIT
+    version: 0.1.0
+    published: '2026-06-26'
+    repository: https://github.com/pipeworx-io/mcp-api-football
+    description: Community MCP server exposing API-Football data to agents.
+    note: See mcp/api-football-mcp.yml.
+  - name: api-football-mcp
+    registry: npm
+    url: https://www.npmjs.com/package/api-football-mcp
+    language: TypeScript
+    kind: mcp-server
+    official: false
+    license: MIT
+    version: 1.0.0
+    published: '2025-11-15'
+    description: Community MCP server for API-Football data.
+    note: See mcp/api-football-mcp.yml.
+registries_checked:
+  - registry: npm
+    result: 6 relevant third-party packages, 0 first-party
+  - registry: pypi
+    result: no package under api-football / apifootball / api-sports
+  - registry: github-org
+    result: no public organisation
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com

@@ -1,0 +1,112 @@
+specification: API Commons Error Catalog
+specificationVersion: '0.1'
+provider: API Football
+providerId: api-football
+generated: '2026-09-02'
+modified: '2026-09-02'
+method: probed
+source: >-
+  Live unauthenticated and placeholder-key probes of
+  https://v3.football.api-sports.io/status and sibling paths, run 2026-09-02,
+  plus the error-rendering branch of the provider's own widget libraries at
+  https://widgets.api-sports.io/football/2.0.3/library/standings.js
+description: >-
+  Error catalog for the API-Football v3 REST API. Errors are NOT RFC 9457
+  problem+json: they ride inside the standard six-key response envelope in an
+  `errors` object, and — this is the trap — a rejected credential comes back with
+  HTTP 200, not 4xx. Only the entries below were observed on a live response;
+  the provider's documented error reference could not be read (the docs host is
+  served to our crawler as a Cloudflare managed challenge), so this catalog is
+  deliberately short rather than padded.
+format: custom
+rfc9457: false
+media_type: application/json
+envelope:
+  location: errors
+  shape: >-
+    `errors` is an object keyed by error class whose values are human-readable
+    strings; on a clean success it is an empty array (`"errors": []`). Callers
+    must branch on `errors` and `results`, NOT on the HTTP status code alone.
+  sibling_fields: [get, parameters, results, paging, response]
+
+status_codes:
+  - status: 403
+    meaning: >-
+      No credential header supplied at all. The envelope comes back with an empty
+      `get` field.
+    verified: true
+  - status: 200
+    meaning: >-
+      Request reached the application. This covers BOTH a genuine result AND a
+      rejected/expired/quota-exhausted key — the distinguishing signal is a
+      non-empty `errors` object.
+    verified: true
+  - status: 401
+    meaning: >-
+      Returned by the RapidAPI edge host (api-football-v1.p.rapidapi.com) when
+      the marketplace key is missing or invalid. Marketplace channel only.
+    verified: true
+
+problem_types:
+  - id: token-missing-no-header
+    class: token
+    http_status: 403
+    title: Missing application key
+    detail: >-
+      "Missing application key, Check our documentation on how to add your API key
+      in headers."
+    vendor_code: 4xHe
+    remediation: >-
+      Send the key in the `x-apisports-key` header (direct channel) or in
+      `x-rapidapi-key` plus `x-rapidapi-host` (RapidAPI channel).
+    verified: true
+    observed_at: https://v3.football.api-sports.io/status
+  - id: token-invalid
+    class: token
+    http_status: 200
+    title: Error/Missing application key
+    detail: >-
+      "Error/Missing application key. Go to
+      https://www.api-football.com/documentation-v3 to learn how to get your API
+      application key."
+    remediation: >-
+      The header was present but the key was not recognised. Re-issue the key from
+      the API-Sports dashboard. Note the HTTP 200 — do not treat `response.ok` as
+      success.
+    verified: true
+    observed_at: https://v3.football.api-sports.io/status
+  - id: rapidapi-unauthorized
+    class: transport
+    http_status: 401
+    title: Unauthorized (RapidAPI edge)
+    detail: >-
+      The RapidAPI gateway rejects the call before it reaches API-Sports, so the
+      API-Sports envelope is not returned.
+    remediation: >-
+      Supply a valid RapidAPI key and the `x-rapidapi-host:
+      api-football-v1.p.rapidapi.com` header, or switch to the direct channel.
+    verified: true
+    observed_at: https://api-football-v1.p.rapidapi.com/v3/status
+
+empty_result_is_not_an_error:
+  detail: >-
+    A well-formed call that matches nothing returns HTTP 200, an EMPTY `errors`,
+    and `results: 0`. The provider's own widget code renders that case as a
+    "No Standings Available" message and explicitly branches on `0 === e.results`
+    only AFTER it has iterated `e.errors`. Consumers should do the same, in that
+    order.
+  verified: true
+  evidence: https://widgets.api-sports.io/football/2.0.3/library/standings.js
+
+gaps:
+  - >-
+      Quota-exhaustion, plan-restriction, parameter-validation and
+      subscription-expiry error strings are documented by the provider but could
+      not be captured: the reference at
+      https://www.api-football.com/documentation-v3 answers our crawler with a
+      Cloudflare managed challenge (HTTP 403). They are omitted rather than
+      guessed.
+
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com

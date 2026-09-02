@@ -1,0 +1,136 @@
+specification: API Commons Conformance
+specificationVersion: '0.1'
+provider: API Football
+providerId: api-football
+generated: '2026-09-02'
+modified: '2026-09-02'
+method: probed
+source: >-
+  Live probes of https://v3.football.api-sports.io/, /.well-known/ probes across
+  every provider host, and reads of the provider's shipped widget libraries, run
+  2026-09-02.
+description: >-
+  Cross-cutting standards conformance for API-Football. This is a plain,
+  unornamented REST/JSON surface: no OAuth, no OIDC, no RFC 9457, no
+  hypermedia, no cursor pagination, no domain standard. Every `conforms: false`
+  below is a probed negative with the evidence that produced it — none of them is
+  a penalty inferred from silence.
+standards:
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: false
+    evidence:
+      - url: https://www.api-football.com/.well-known/oauth-authorization-server
+        status: 404
+      - url: https://api-sports.io/.well-known/oauth-authorization-server
+        status: 404
+    note: >-
+      Authentication is a single static API key in a request header
+      (x-apisports-key). There is no authorization server, no token endpoint and
+      no scopes.
+  - id: oidc
+    name: OpenID Connect
+    conforms: false
+    evidence:
+      - url: https://www.api-football.com/.well-known/openid-configuration
+        status: 404
+      - url: https://api-sports.io/.well-known/openid-configuration
+        status: 404
+  - id: rfc9457
+    name: 'RFC 9457 — Problem Details for HTTP APIs'
+    conforms: false
+    evidence:
+      - url: https://v3.football.api-sports.io/status
+        status: 403
+        detail: >-
+          content-type application/json; body is the provider's own six-key
+          envelope with an `errors` object, not application/problem+json.
+    note: See errors/api-football-problem-types.yml.
+  - id: rfc8594
+    name: 'RFC 8594 — Sunset HTTP Header'
+    conforms: false
+    evidence:
+      - url: https://v3.football.api-sports.io/status
+        status: 200
+        detail: no Sunset and no Deprecation header on any probed response
+  - id: rfc9727
+    name: 'RFC 9727 — api-catalog well-known URI'
+    conforms: false
+    evidence:
+      - url: https://www.api-football.com/.well-known/api-catalog
+        status: 404
+      - url: https://api-sports.io/.well-known/api-catalog
+        status: 404
+  - id: rfc9116
+    name: 'RFC 9116 — security.txt'
+    conforms: false
+    evidence:
+      - url: https://www.api-football.com/.well-known/security.txt
+        status: 404
+      - url: https://api-sports.io/.well-known/security.txt
+        status: 404
+  - id: ratelimit-headers
+    name: IETF RateLimit header fields
+    conforms: false
+    evidence:
+      - url: https://v3.football.api-sports.io/status
+        status: 200
+        detail: >-
+          no RateLimit-*, X-RateLimit-* or Retry-After header on the response.
+          Only access-control-allow-headers was returned.
+    note: >-
+      Not verified against an authenticated response; recorded as
+      not-conforming on the evidence available rather than asserted either way in
+      the rate-limits artifact.
+  - id: pagination
+    name: Pagination
+    conforms: true
+    style: page-number
+    evidence:
+      - url: https://v3.football.api-sports.io/status
+        status: 200
+        detail: 'every response carries `paging: {current, total}` and a `results` count'
+  - id: idempotency
+    name: Idempotency keys
+    conforms: na
+    note: >-
+      Not applicable — the public surface is read-only (GET only, no request
+      bodies). See conventions/api-football-conventions.yml.
+  - id: json-api
+    name: 'JSON:API'
+    conforms: false
+    evidence:
+      - url: https://v3.football.api-sports.io/status
+        status: 200
+        detail: 'content-type application/json; no `data`/`included`/`links` document structure'
+  - id: cors
+    name: CORS
+    conforms: true
+    evidence:
+      - url: https://v3.football.api-sports.io/status
+        status: 200
+        detail: >-
+          `access-control-allow-headers: x-rapidapi-key, x-apisports-key,
+          x-rapidapi-host` — the API is designed to be called from the browser,
+          which is consistent with the first-party widget library.
+domain_standard:
+  declared: false
+  detail: >-
+    REWARD-ONLY CHECK, LEFT EMPTY HONESTLY. Sports-data distribution has no
+    broadly adopted machine-readable interchange standard of the kind the
+    domain-standard check rewards (no SCIM URN, OData $metadata, OpenRTB,
+    Sparkplug, ActivityPub, LTI/OneRoster/Ed-Fi, OAI-PMH, ORCID/DataCite,
+    HL7v2/X12/EDIFACT/ISO-20022 shape applies to this market), and API-Football
+    declares none. There is no regulatory regime in scoring.yml covering sports
+    data. Nothing is claimed here to fill the slot.
+compliance_program:
+  published: false
+  detail: >-
+    No trust centre, no named certification (SOC 2 / ISO 27001 / PCI / HIPAA /
+    FedRAMP) and no vulnerability-disclosure programme were found; see
+    security/api-football-vulnerability-disclosure probes. No `Compliance`
+    pointer is wired into apis.yml.
+  verified: true
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com

@@ -1,0 +1,108 @@
+specification: API Commons Authentication
+specificationVersion: '0.1'
+provider: API Football
+providerId: api-football
+generated: '2026-09-02'
+modified: '2026-09-02'
+method: probed
+source: >-
+  Live unauthenticated + bogus-key probes of https://v3.football.api-sports.io/status
+  run 2026-09-02, cross-read against the provider's own widget library at
+  https://widgets.api-sports.io/football/2.0.3/library/standings.js and the
+  documented auth section at
+  https://www.api-football.com/documentation-v3#section/Authentication
+description: >-
+  API-Football authenticates with a single static API key sent in a request
+  header. There is no OAuth, no OIDC, no bearer/JWT flow and no mTLS. The key is
+  issued from the API-Sports dashboard and the SAME key works across every
+  API-Sports sport surface. Two header names are accepted, and which one you use
+  depends on which of the two distribution channels you bought through.
+schemes:
+  - id: apisports-key
+    name: API-Sports direct key
+    type: apiKey
+    in: header
+    header: x-apisports-key
+    host: v3.football.api-sports.io
+    channel: direct
+    description: >-
+      The key issued in the API-Sports dashboard, used when calling the API
+      directly at https://v3.football.api-sports.io. Sent on every request.
+    obtained_at: https://dashboard.api-football.com/register
+    rotatable: unknown
+    scopes: []
+  - id: rapidapi-key
+    name: RapidAPI marketplace key
+    type: apiKey
+    in: header
+    header: x-rapidapi-key
+    companion_header: x-rapidapi-host
+    host: api-football-v1.p.rapidapi.com
+    channel: marketplace
+    description: >-
+      The RapidAPI-issued key, used when the subscription was bought through the
+      RapidAPI hub. Requires the companion x-rapidapi-host header naming the
+      RapidAPI edge host. The provider's own widget library switches base URL on
+      the value of that header: when x-rapidapi-host is not
+      "v3.football.api-sports.io" it calls
+      https://api-football-v1.p.rapidapi.com/v3/ instead.
+    obtained_at: https://rapidapi.com/api-sports/api/api-football
+    scopes: []
+evidence:
+  - what: The API host advertises exactly which key headers it accepts.
+    url: https://v3.football.api-sports.io/status
+    http_status: 200
+    header_observed: 'access-control-allow-headers: x-rapidapi-key, x-apisports-key, x-rapidapi-host'
+    fetched: '2026-09-02'
+  - what: >-
+      With NO key header the API returns HTTP 403 and an envelope whose "get"
+      field is empty.
+    url: https://v3.football.api-sports.io/status
+    http_status: 403
+    body: >-
+      {"get": "","parameters": [],"errors": {"token": "Missing application key,
+      Check our documentation on how to add your API key in headers.","error":
+      "4xHe"},"results": 0,"paging": {"current": 1,"total": 1},"response": []}
+    fetched: '2026-09-02'
+  - what: >-
+      With an INVALID key header present the API switches to HTTP 200 and a
+      different message. The status code therefore distinguishes "no credential
+      supplied" (403) from "credential supplied but rejected" (200 + errors.token).
+    url: https://v3.football.api-sports.io/status
+    request_header: 'x-apisports-key: <32-char placeholder>'
+    http_status: 200
+    body: >-
+      {"get":"status","parameters":[],"errors":{"token":"Error/Missing application
+      key. Go to https://www.api-football.com/documentation-v3 to learn how to get
+      your API application
+      key."},"results":0,"paging":{"current":1,"total":1},"response":[]}
+    fetched: '2026-09-02'
+  - what: >-
+      The RapidAPI edge host is a genuinely separate, gated surface (401, not the
+      API-Sports envelope).
+    url: https://api-football-v1.p.rapidapi.com/v3/status
+    http_status: 401
+    fetched: '2026-09-02'
+  - what: The provider's own widget library sets both headers and switches host on them.
+    url: https://widgets.api-sports.io/football/2.0.3/library/standings.js
+    http_status: 200
+    fetched: '2026-09-02'
+notes:
+  - >-
+      AUTH FAILURE IS NOT SIGNALLED BY STATUS CODE ALONE. Once any key header is
+      present, a rejected key still returns HTTP 200 with the failure carried in
+      the body's `errors` object. An agent that branches only on response.ok will
+      read a rejected key as a successful empty result. Always test
+      `errors` and `results` before trusting a 200.
+  - >-
+      No OAuth 2.0 or OpenID Connect surface exists: /.well-known/openid-configuration
+      and /.well-known/oauth-authorization-server return 404 on every host
+      (see well-known/api-football-well-known.yml). There are consequently no
+      scopes to document, and no scopes/ artifact is written.
+  - >-
+      One key spans the whole API-Sports family (football, basketball, baseball,
+      hockey, rugby, volleyball, handball, Formula 1, NFL/AFL). The key is
+      account-scoped, not product-scoped.
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com

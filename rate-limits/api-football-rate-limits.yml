@@ -4,10 +4,11 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: API Football
 providerId: api-football
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
+generated: '2026-09-02'
+modified: '2026-09-02'
+method: searched
+source: https://www.api-football.com/pricing
+docs: https://www.api-football.com/documentation-v3#section/Rate-limit
 tags:
   - Sports
   - Football
@@ -16,77 +17,127 @@ tags:
   - Statistics
   - Rate Limiting
   - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the API Football API surface. Captures per-tier
-  quotas, burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to
-  be replaced with published provider limits.
-headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
-responseCodes:
-  throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
+description: >-
+  Published request limits for the API-Football v3 API. THIS FILE REPLACES A
+  2026-05-04 SCAFFOLD that carried invented per-minute ceilings (10/100/1000 rpm)
+  and an invented 1,000-request monthly free quota. Those numbers were never
+  published by API-Sports and have been removed. What remains is the provider's
+  real metering unit — a DAILY request quota attached to the plan — plus an
+  honest record of what we could not verify.
+metering_unit: requests_per_day
+reset:
+  window: day
+  at: '00:00 UTC'
+  rollover: false
+  detail: >-
+    The daily allowance resets to zero at 00:00 UTC. Unused requests are lost;
+    they do not roll over into the next day.
+  verified: false
 limits:
   - tier: free
-    name: Free Tier Default
+    name: Free plan daily quota
     scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - API-Football
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - API-Football
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
+    metric: requests_per_day
     limit: 100
-    burst: 200
-    timeFrame: minute
+    timeFrame: day
+    price_usd_month: 0
+    verified: false
     applies:
       - API-Football
-  - tier: professional
-    name: Professional Tier Monthly Quota
+  - tier: pro
+    name: Pro plan daily quota
     scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
+    metric: requests_per_day
+    limit: 7500
+    timeFrame: day
+    price_usd_month: 19
+    verified: false
     applies:
       - API-Football
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
+  - tier: ultra
+    name: Ultra plan daily quota
+    scope: api-key
+    metric: requests_per_day
+    limit: 75000
+    timeFrame: day
+    price_usd_month: 29
+    verified: false
     applies:
       - API-Football
+  - tier: mega
+    name: Mega plan daily quota
+    scope: api-key
+    metric: requests_per_day
+    limit: 150000
+    timeFrame: day
+    price_usd_month: 39
+    verified: false
+    applies:
+      - API-Football
+  - tier: higher
+    name: Highest published daily quota
+    scope: api-key
+    metric: requests_per_day
+    limit: 1500000
+    timeFrame: day
+    price_usd_month: null
+    verified: false
+    note: >-
+      The provider's pricing page advertises plans reaching 1,500,000 requests
+      per day. The price attached to that tier was not captured.
+    applies:
+      - API-Football
+limit_count: 5
+headers:
+  observed: []
+  detail: >-
+    NO rate-limit response headers were observed. Probes of
+    https://v3.football.api-sports.io/status without a key (HTTP 403) and with a
+    placeholder key (HTTP 200) returned no `RateLimit-*`, no `X-RateLimit-*` and
+    no `Retry-After`. The provider documents a rate-limit section in its
+    reference, but that page is served to our crawler as a Cloudflare managed
+    challenge, so the runtime header names an agent would need could not be
+    confirmed. They are left EMPTY rather than guessed — a wrong header name is
+    worse than a recorded gap.
+  verified: false
+exhaustion_response:
+  status: unknown
+  detail: >-
+    Not observed. Given the envelope contract (see
+    conventions/api-football-conventions.yml) a quota-exhausted call would most
+    plausibly arrive as HTTP 200 with a populated `errors` object rather than a
+    429, but this was NOT verified and is not asserted.
+  verified: false
 policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+  - name: Per-key metering
+    description: >-
+      The quota is attached to the API key / account, and one key spans every
+      API-Sports sport surface. Spending the daily allowance on basketball spends
+      it for football too.
+    verified: false
+  - name: Client-side caching is the documented mitigation
+    description: >-
+      The API sends `cache-control: private, no-store, no-cache`, so HTTP caching
+      is off. The provider's own guidance (and its widgets' minimum 15-second
+      `data-refresh`) push quota management onto the consumer.
+    verified: true
+evidence:
+  - url: https://www.api-football.com/pricing
+    status: 403
+    note: >-
+      cf-mitigated: challenge. Plan quotas above were recovered from search-engine
+      extracts of this same provider page and of the provider's own guide at
+      https://www.api-football.com/news/post/how-to-get-started-with-api-football-the-complete-beginners-guide;
+      they could not be read directly and are flagged verified:false.
+  - url: https://v3.football.api-sports.io/status
+    status: 403
+    note: no rate-limit headers present on the unauthenticated response
+  - url: https://v3.football.api-sports.io/status
+    status: 200
+    note: >-
+      with a placeholder x-apisports-key; still no rate-limit headers. Only
+      `access-control-allow-headers: x-rapidapi-key, x-apisports-key,
+      x-rapidapi-host` was returned.
 maintainers:
   - FN: Kin Lane
     email: info@apievangelist.com

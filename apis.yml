@@ -42,7 +42,7 @@ tags:
 url: >-
   https://raw.githubusercontent.com/api-evangelist/api-football/refs/heads/main/apis.yml
 created: '2025-03-01'
-modified: '2026-04-19'
+modified: '2026-09-02'
 specificationVersion: '0.23'
 apis:
   - aid: api-football:api-football
@@ -52,6 +52,8 @@ apis:
       fixtures, standings, events, line-ups, players, pre-match odds, live
       odds, and historical statistics for 1,200+ leagues and cups worldwide.
     humanURL: https://www.api-football.com/
+    baseURL: https://v3.football.api-sports.io
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/api-football.png
     tags:
       - Sports
       - Football
@@ -59,6 +61,8 @@ apis:
       - Live Scores
     properties:
       - type: Documentation
+        url: https://www.api-football.com/documentation-v3
+      - type: APIReference
         url: https://www.api-football.com/documentation-v3
       - type: GettingStarted
         url: https://www.api-football.com/documentation-v3#section/Introduction
@@ -71,8 +75,38 @@ apis:
 common:
   - type: DomainSecurity
     url: security/api-football-domain-security.yml
+  - type: Authentication
+    url: authentication/api-football-authentication.yml
+  - type: Conventions
+    url: conventions/api-football-conventions.yml
+  - type: ErrorCatalog
+    url: errors/api-football-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/api-football-rate-limits.yml
+  - type: Plans
+    url: plans/api-football-plans-pricing.yml
+  - type: Packages
+    url: packages/api-football-packages.yml
+  - type: Components
+    url: components/api-football-components.yml
+  - type: Lifecycle
+    url: lifecycle/api-football-lifecycle.yml
+  - type: Conformance
+    url: conformance/api-football-conformance.yml
+  - type: LLMsTxt
+    url: llms/api-football-llms.txt
+  - type: FinOps
+    url: finops/api-football-finops.yml
   - type: Website
     url: https://www.api-football.com/
+  - type: APIReference
+    url: https://www.api-football.com/documentation-v3
+  - type: Blog
+    url: https://www.api-football.com/news/
+  - type: TermsOfService
+    url: https://www.api-football.com/terms
+  - type: PrivacyPolicy
+    url: https://www.api-football.com/privacy
   - type: Documentation
     url: https://www.api-football.com/documentation-v3
   - type: Pricing
@@ -152,3 +186,23 @@ common:
 maintainers:
   - FN: Kin Lane
     email: info@apievangelist.com
+x-enrichment:
+  date: '2026-09-02'
+  status: enriched
+  artifacts_added: 10
+  pass: local-v1
+x-contract-note:
+  finding: >-
+    API-Football DOES publish an OpenAPI document, and this repository does NOT
+    hold it. The Redoc documentation page declares it inline as
+    `<redoc spec-url="public/doc/openapi.yaml" hide-download-button>`, resolving
+    to https://www.api-football.com/public/doc/openapi.yaml. Every HTML and .yaml
+    path on www.api-football.com is served to non-browser clients as a Cloudflare
+    managed challenge (HTTP 403, `cf-mitigated: challenge`), so the spec could not
+    be retrieved on 2026-09-02. Do NOT record this provider as publishing no
+    machine-readable contract — the contract exists and the wall is on our side.
+    A future pass with a browser-capable fetcher should harvest it into openapi/
+    and then derive data-model/, skills/, overlays/ and a tool crosswalk from it.
+  spec_url: https://www.api-football.com/public/doc/openapi.yaml
+  spec_status: 403
+  checked: '2026-09-02'

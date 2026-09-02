@@ -1,0 +1,115 @@
+specification: API Commons Components
+specificationVersion: '0.1'
+provider: API Football
+providerId: api-football
+generated: '2026-09-02'
+modified: '2026-09-02'
+method: probed
+source: >-
+  Direct reads of the provider's own widget bundle at
+  https://widgets.api-sports.io/2.0.3/widgets.js and its per-sport libraries
+  under https://widgets.api-sports.io/<sport>/2.0.3/library/, run 2026-09-02.
+description: >-
+  API-Sports ships a first-party, drop-in browser widget library — the one piece
+  of code the company actually distributes itself (there is no first-party SDK;
+  see packages/api-football-packages.yml). Each widget is a plain HTML div with a
+  reserved id and `data-*` attributes; the bundle finds the div on DOMContentLoaded
+  and renders into it, calling the same public REST API with the consumer's own
+  key. Distribution is a CDN script tag, not a registry package.
+distribution:
+  registry: cdn
+  loader: https://widgets.api-sports.io/2.0.3/widgets.js
+  module_type: ES module (uses `import` — must be loaded as type="module")
+  version: 2.0.3
+  published: null
+  version_pinning: pinned-in-url
+  version_note: >-
+    The version is pinned in the path. 2.0.3 is the ONLY version the CDN serves —
+    2.0.0, 2.0.1, 2.0.2, 2.0.4, 2.0.5, 2.1.0 and 3.0.0 all return 404 — so a
+    consumer on this URL is on the current and only build. No release date is
+    published anywhere we could read, hence `published: null`.
+  probes:
+    - url: https://widgets.api-sports.io/2.0.3/widgets.js
+      status: 200
+      bytes: 40457
+    - url: https://widgets.api-sports.io/2.0.4/widgets.js
+      status: 404
+    - url: https://widgets.api-sports.io/2.1.0/widgets.js
+      status: 404
+families:
+  - name: Football widgets
+    sport: football
+    components:
+      - id: wg-api-football-games
+        name: Games / fixtures list
+        renders: >-
+          A date-navigable list of fixtures with an ALL / LIVE / FINISHED /
+          SCHEDULED toolbar and a +/- 7 day date dropdown.
+        backing_endpoint: /fixtures
+        library: https://widgets.api-sports.io/football/2.0.3/library/games.js
+      - id: wg-api-football-game
+        name: Single game
+        renders: One fixture's detail panel.
+        backing_endpoint: /fixtures
+        library: https://widgets.api-sports.io/football/2.0.3/library/game.js
+      - id: wg-api-football-standings
+        name: League standings table
+        renders: A league table for a league/season, optionally highlighting a team.
+        backing_endpoint: /standings
+        library: https://widgets.api-sports.io/football/2.0.3/library/standings.js
+  - name: Sibling-sport widgets
+    note: >-
+      The same bundle ships game / games / standings widgets for the rest of the
+      API-Sports family, addressed by the same id convention
+      (`wg-api-<sport>-<widget>`). They are listed because they share the loader
+      and the key, not because they are part of the football product.
+    sports: [baseball, basketball, handball, hockey, rugby, volleyball]
+    components:
+      - id: wg-api-<sport>-games
+      - id: wg-api-<sport>-game
+      - id: wg-api-<sport>-standings
+configuration_attributes:
+  - name: data-key
+    description: The consumer's API key. NOTE — this places the key in client-side HTML.
+  - name: data-host
+    description: >-
+      API host. The library switches base URL on this value: anything other than
+      `v3.football.api-sports.io` routes to
+      https://api-football-v1.p.rapidapi.com/v3/.
+  - name: data-theme
+    description: Visual theme (empty string for default).
+  - name: data-date
+    description: 'Date filter, YYYY-MM-DD. Defaults to today when league/season are also empty.'
+  - name: data-league
+    description: League id filter.
+  - name: data-season
+    description: Season filter.
+  - name: data-team
+    description: Team to highlight (standings widget).
+  - name: data-id
+    description: Fixture id (single-game widget).
+  - name: data-show-toolbar
+    description: '"false" removes the date/status toolbar.'
+  - name: data-show-errors
+    description: '"true" renders the API''s `errors` strings into the widget.'
+  - name: data-show-logos
+    description: Toggle club/league crest images.
+  - name: data-modal-game
+    description: Open a game modal on row click.
+  - name: data-modal-standings
+    description: Open a standings modal on row click.
+  - name: data-refresh
+    description: >-
+      Auto-refresh interval in SECONDS. The library multiplies it by 1000 and only
+      installs the interval when the result is an integer >= 15000 — i.e. a
+      refresh faster than 15 seconds is silently ignored. This is the provider's
+      built-in quota guard.
+security_note: >-
+  Widgets read `data-key` from the DOM, so the API key is exposed to anyone who
+  views source on the embedding page. The provider publishes its own guidance on
+  this at
+  https://www.api-football.com/news/post/how-to-optimize-widgets-cache-and-security-tutorial
+docs: https://www.api-football.com/widgets
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com

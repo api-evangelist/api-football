@@ -1,0 +1,205 @@
+specification: API Commons Conventions
+specificationVersion: '0.1'
+provider: API Football
+providerId: api-football
+generated: '2026-09-02'
+modified: '2026-09-02'
+method: probed
+source: >-
+  Live probes of https://v3.football.api-sports.io/ (unauthenticated and with a
+  placeholder key) and reads of the provider's own widget libraries at
+  https://widgets.api-sports.io/football/2.0.3/library/{game,games,standings}.js,
+  run 2026-09-02.
+description: >-
+  Cross-cutting runtime semantics for the API-Football v3 REST API. Every
+  statement here was observed on a live response or read out of the provider's
+  own shipped JavaScript. Anything we could not observe is marked
+  `verified: false` rather than filled in — the human-readable reference at
+  www.api-football.com/documentation-v3 is served to our crawler as a Cloudflare
+  managed challenge (`cf-mitigated: challenge`, HTTP 403), so prose-only details
+  could not be confirmed.
+
+contract:
+  openapi_published: true
+  openapi_url: https://www.api-football.com/public/doc/openapi.yaml
+  openapi_retrievable: false
+  note: >-
+    API-Football DOES publish an OpenAPI document. Its documentation page is a
+    Redoc host and declares the spec inline as
+    `<redoc spec-url="public/doc/openapi.yaml" hide-download-button>`, resolving
+    to https://www.api-football.com/public/doc/openapi.yaml. That URL is served
+    to non-browser clients as a Cloudflare managed challenge (HTTP 403,
+    `cf-mitigated: challenge`), so the document could not be retrieved and NO
+    spec has been saved to this repo. This is a retrieval wall, not an absence:
+    do not record "no machine-readable contract" for this provider.
+  evidence:
+    - url: https://www.api-football.com/public/doc/openapi.yaml
+      status: 403
+      detail: 'cf-mitigated: challenge; body is the Cloudflare "Just a moment..." interstitial'
+    - url: https://www.api-football.com/public/doc/openapi.json
+      status: 404
+      detail: origin answered — only the .yaml form exists
+
+interface_style: REST
+protocol: HTTPS
+transport_notes: >-
+  HTTP/2 at the edge (Cloudflare). All calls are GET; no request body is used
+  anywhere in the surface we could observe.
+
+base_urls:
+  - url: https://v3.football.api-sports.io
+    channel: direct
+    verified: true
+    evidence_status: 403
+  - url: https://api-football-v1.p.rapidapi.com/v3
+    channel: rapidapi-marketplace
+    verified: true
+    evidence_status: 401
+
+authentication:
+  style: api-key-header
+  headers: [x-apisports-key, x-rapidapi-key]
+  detail: see authentication/api-football-authentication.yml
+  verified: true
+
+versioning:
+  style: host-and-path
+  detail: >-
+    The major version is baked into the hostname on the direct channel
+    (v3.football.api-sports.io) and into the path on the RapidAPI channel
+    (/v3/). There is no Accept-header or query-parameter version negotiation
+    that we could observe. Current major: v3.
+  current_version: v3
+  verified: true
+
+response_envelope:
+  shape: >-
+    Every response — success and failure alike — is a JSON object with the same
+    six top-level keys.
+  fields:
+    - name: get
+      description: >-
+        Echo of the requested endpoint path. NOTE: this echoes ANY path,
+        including paths that do not exist, so it is not an endpoint-existence
+        oracle.
+    - name: parameters
+      description: Echo of the query parameters the server accepted for this call.
+    - name: errors
+      description: >-
+        Object (or empty array when there is no error) keyed by error class,
+        e.g. `token`. Populated even on HTTP 200.
+    - name: results
+      description: Integer count of items in `response`.
+    - name: paging
+      description: 'Object with `current` and `total` page numbers.'
+    - name: response
+      description: Array carrying the actual payload.
+  verified: true
+  example_observed: >-
+    {"get":"status","parameters":[],"errors":{"token":"Error/Missing application
+    key. ..."},"results":0,"paging":{"current":1,"total":1},"response":[]}
+
+error_envelope:
+  format: custom
+  rfc9457: false
+  detail: >-
+    Errors are NOT RFC 9457 problem+json. They are returned inside the standard
+    envelope's `errors` object with `content-type: application/json`. Critically,
+    an authenticated-but-rejected call returns HTTP **200** with the failure only
+    in the body; only a call with NO key header at all returns HTTP 403. Clients
+    must inspect `errors` on every response.
+  verified: true
+  see_also: errors/api-football-problem-types.yml
+
+pagination:
+  style: page-number
+  response_fields: [paging.current, paging.total, results]
+  request_parameter: page
+  request_parameter_verified: false
+  detail: >-
+    Responses carry a `paging` object with `current` and `total`. The request-side
+    parameter is documented as `page` in the provider reference, but the reference
+    is behind a Cloudflare managed challenge for our crawler so the parameter name
+    is recorded unverified.
+
+filtering_and_expansion:
+  style: query-parameters
+  detail: >-
+    Resources are filtered with flat query parameters. Observed in the provider's
+    own widget code: `/standings?league=&season=&team=` and `/fixtures?...`. There
+    is no field-expansion, sparse-fieldset, or `include=` mechanism in the surface
+    we could observe.
+  verified: true
+  evidence: https://widgets.api-sports.io/football/2.0.3/library/standings.js
+
+request_id_tracing:
+  supported: false
+  verified: false
+  detail: >-
+    No correlation/request-id response header was present on any probed response.
+    Cloudflare's `cf-ray` is present but is edge infrastructure, not a provider
+    trace id.
+
+rate_limit_signaling:
+  headers_observed: []
+  detail: >-
+    No RateLimit-* / X-RateLimit-* headers appeared on unauthenticated or
+    rejected-key responses. Whether authenticated responses carry them could not
+    be verified without a live key. See rate-limits/api-football-rate-limits.yml.
+  verified: false
+
+caching:
+  detail: >-
+    The API sets `cache-control: private, max-age=0, no-store, no-cache,
+    must-revalidate` and `expires: Thu, 01 Jan 1970 00:00:01 GMT` — responses are
+    explicitly uncacheable at the HTTP layer. The provider's own guidance is to
+    manage quota by caching client-side and by using the widgets' `data-refresh`
+    interval (minimum 15 seconds).
+  verified: true
+
+idempotency:
+  status: na
+  reason: >-
+    The public surface is read-only — every operation observed is a GET and no
+    request body exists anywhere. There is nothing to double-fire, so an
+    idempotency key would have no meaning. No Idempotency pointer is wired into
+    apis.yml.
+
+dry_run_mode:
+  status: na
+  reason: Read-only surface; there is no write to rehearse.
+
+reversibility:
+  status: na
+  grade: na
+  reason: >-
+    API-Football exposes no write, mutation, or state-changing operation on its
+    public API — the entire v3 surface is GET-only football data retrieval, and
+    the only account-state actions (subscribe, cancel, regenerate key) live in
+    the human dashboard at dashboard.api-football.com, not in the API. There is
+    no action an agent can take through this API that would need taking back, so
+    reversibility is not applicable rather than absent.
+  write_surfaces: []
+  reversal_operations: []
+  verified: true
+  evidence:
+    - url: https://v3.football.api-sports.io/status
+      status: 403
+      detail: >-
+        GET-only surface; the provider's own client libraries issue only
+        `fetch(base + endpoint + querystring, {method:"GET"})`.
+    - url: https://widgets.api-sports.io/football/2.0.3/library/standings.js
+      status: 200
+      detail: 'method: "GET" is hardcoded in every shipped request helper'
+
+cross_links:
+  authentication: authentication/api-football-authentication.yml
+  errors: errors/api-football-problem-types.yml
+  lifecycle: lifecycle/api-football-lifecycle.yml
+  rate_limits: rate-limits/api-football-rate-limits.yml
+  plans: plans/api-football-plans-pricing.yml
+  components: components/api-football-components.yml
+
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com
