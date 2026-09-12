@@ -1,0 +1,11 @@
+{
+  "repo": "api-football",
+  "feeds": [
+    {
+      "source": "https://www.api-football.com/documentation-v3",
+      "error": "HTTPError"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-09-06T19:17:18Z"
+}
