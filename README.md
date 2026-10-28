@@ -1,4 +1,4 @@
-# API Football (api-football)
+# API Football
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,79 +66,107 @@
 
 API-Football is a RESTful API providing comprehensive football (soccer) data covering 1,200+ leagues and cups worldwide. Operated by API-Sports, the platform delivers live scores, fixtures, standings, events, line-ups, player statistics, pre-match odds, and historical data. The API supports 9+ sports total including soccer, Formula 1, basketball, baseball, hockey, rugby, volleyball, and handball. Data is returned in JSON format and updates every 15 seconds during live matches.
 
-**URL:** [https://raw.githubusercontent.com/api-evangelist/api-football/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/api-football/refs/heads/main/apis.yml)
+**Areas:** Sports · Football · Soccer · Live Scores · Statistics
 
-**Run:** [Capabilities Using Naftiko](https://github.com/naftiko/fleet?utm_source=api-evangelist&utm_medium=readme&utm_campaign=company-api-evangelist&utm_content=repo)
+## API Football on APIs.io
 
-## Tags:
+Everything profiled for API Football is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/api-football/](https://apis.io/providers/api-football/)** — or go straight to one of the APIs or properties below.
 
- - Sports, Football, Soccer, Live Scores, Statistics
+### APIs (1)
 
-## Timestamps
+- [API-Football](https://apis.io/apis/api-football/api-football/) — API-Football provides comprehensive football data including leagues, fixtures, standings, events, line-ups, players, pre-match odds, live odds, and…
 
-- **Created:** 2025-03-01
-- **Modified:** 2026-04-19
+### Published properties
 
-## APIs
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-### API-Football
-API-Football provides comprehensive football data including leagues, fixtures, standings, events, line-ups, players, pre-match odds, live odds, and historical statistics for 1,200+ leagues and cups worldwide.
+#### Security (2)
 
-**Human URL:** [https://www.api-football.com/](https://www.api-football.com/)
+Authentication, trust centre, and vulnerability disclosure.
 
-#### Tags:
+- [Api Football Authentication](https://apis.io/security/api-football/api-football-authentication/)
+- [Api Football Domain Security](https://apis.io/security/api-football/api-football-domain-security/)
 
- - Sports, Football, Soccer, Live Scores
+#### Plans and pricing (1)
 
-#### Properties
+Published plans, tiers and prices.
 
-- [Documentation](https://www.api-football.com/documentation-v3)
-- [GettingStarted](https://www.api-football.com/documentation-v3#section/Introduction)
-- [Pricing](https://www.api-football.com/pricing)
-- [Authentication](https://www.api-football.com/documentation-v3#section/Authentication)
-- [RateLimits](https://www.api-football.com/documentation-v3#section/Rate-limit)
+- [Api Football Plans Pricing](https://apis.io/plans/api-football/api-football-plans-pricing/)
 
-## Common Properties
+#### Rate limits (1)
+
+Published request limits.
+
+- [Api Football Rate Limits](https://apis.io/rate-limits/api-football/api-football-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Api Football Finops](https://apis.io/finops/api-football/api-football-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
 - [Website](https://www.api-football.com/)
 - [Documentation](https://www.api-football.com/documentation-v3)
+- [API reference](https://www.api-football.com/documentation-v3)
 - [Pricing](https://www.api-football.com/pricing)
-- [SignUp](https://dashboard.api-football.com/register)
-- [Login](https://dashboard.api-football.com/login)
 - [Support](https://www.api-football.com/contact)
+- [Blog](https://www.api-football.com/news/)
+- [Terms of service](https://www.api-football.com/terms)
+- [Privacy policy](https://www.api-football.com/privacy)
 
-## Features
+## API Evangelist rating
 
-| Name | Description |
-|------|-------------|
-| 1200+ Leagues and Cups | Comprehensive coverage of over 1,200 football leagues and cups worldwide including major leagues, cups, and international competitions. |
-| Live Scores | Real-time match data updated every 15 seconds during live matches, including scores, events, and match statistics. |
-| Fixtures and Results | Complete fixture schedules and match results including past, present, and upcoming matches with full event details. |
-| Standings | League standings and tables for all supported competitions with points, wins, draws, losses, and goal difference. |
-| Player Statistics | Individual player statistics including goals, assists, cards, appearances, and detailed performance metrics. |
-| Pre-Match and Live Odds | Pre-match betting odds and live odds from major bookmakers available in all pricing tiers. |
-| Historical Data | Multiple years of historical match data available for statistical analysis, fantasy football, and predictive modeling. |
-| Multi-Sport Coverage | Beyond football/soccer, API-Sports covers Formula 1, basketball, baseball, hockey, rugby, volleyball, and handball. |
+**Kin Score 37.8** — thin · rubric 0.24.0 · scored 2026-10-17
 
-## Use Cases
+| Facet | Score |
+|---|---|
+| Discoverability | 66.1 |
+| Contract quality | 0.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 31.6 |
+| Developer ergonomics | 47.6 |
+| Access clarity | 69.7 |
 
-| Name | Description |
-|------|-------------|
-| Sports Applications | Build mobile and web apps displaying live scores, fixtures, standings, and player statistics for football fans. |
-| Fantasy Football Platforms | Power fantasy football platforms with player statistics, injury updates, match results, and historical performance data. |
-| Sports Betting | Integrate pre-match odds, live odds, and real-time match events into sports betting and prediction platforms. |
-| Sports Analytics | Analyze historical match data, player performance, and team statistics for sports analytics and scouting platforms. |
-| Widgets and Embeds | Embed live score widgets and statistics panels into websites using API-Football's data and widget integrations. |
+**Agent readiness 7.9** — agent-aware
 
-## Integrations
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
 
-| Name | Description |
-|------|-------------|
-| RapidAPI | API-Football is available on the RapidAPI hub enabling discovery and access through the RapidAPI marketplace. |
-| Stripe and PayPal | Subscriptions managed via Stripe or PayPal with no auto-renewal and prepaid plan options. |
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
 
-## Maintainers
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/api-football/](https://apis.io/providers/api-football/).
 
-**FN:** Kin Lane
+## How this profile is made
 
-**Email:** info@apievangelist.com
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for API Football: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/api-football/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
