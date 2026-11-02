@@ -1,0 +1,209 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: API Football
+providerId: api-football
+created: '2026-05-04'
+generated: '2026-09-02'
+modified: '2026-09-02'
+method: searched
+source: https://www.api-football.com/pricing
+tags:
+  - Sports
+  - Football
+  - Soccer
+  - Live Scores
+  - Statistics
+description: >-
+  Published plans and pricing for API-Football. THIS FILE REPLACES A 2026-05-04
+  SCAFFOLD that invented a Free / Professional / Enterprise ladder with TBD
+  prices and a 1,000-request monthly quota — none of which API-Sports publishes.
+  The real ladder is self-serve, priced monthly in US dollars, and metered in
+  requests PER DAY. There is no enterprise "contact us" tier in the self-serve
+  ladder; the differentiator between tiers is volume and historical depth, not
+  features — every paid plan carries every endpoint and every competition.
+plan_count: 4
+currency: USD
+billing_period: month
+billing_notes: >-
+  Subscriptions are handled through Stripe or PayPal. The provider advertises no
+  auto-renewal and offers prepaid plans.
+plans:
+  - id: api-football-free
+    name: Free
+    type: freemium
+    price: '0.00'
+    currency: USD
+    billingPeriod: month
+    verified: false
+    description: >-
+      Free tier with a 100-request daily allowance. Access to every endpoint
+      without exception; the constraint is volume and historical range, not
+      feature gating.
+    entries:
+      - label: API Requests
+        description: Daily request allowance, reset at 00:00 UTC; unused requests are lost
+        name: api_requests
+        type: quota
+        metric: requests
+        limit: 100
+        timeFrame: day
+        geo: global
+        domains: []
+        unit: 1
+        price: '0.00'
+        userMultiplied: false
+    elements:
+      - name: All endpoints
+      - name: Public documentation
+      - name: API-Football
+  - id: api-football-pro
+    name: Pro
+    type: paid
+    price: '19.00'
+    currency: USD
+    billingPeriod: month
+    verified: false
+    description: Entry paid tier, 7,500 requests per day.
+    entries:
+      - label: API Requests
+        description: Daily request allowance
+        name: api_requests
+        type: quota
+        metric: requests
+        limit: 7500
+        timeFrame: day
+        geo: global
+        domains: []
+        unit: 1
+        price: '19.00'
+        userMultiplied: false
+    elements:
+      - name: All endpoints
+      - name: All competitions
+      - name: API-Football
+  - id: api-football-ultra
+    name: Ultra
+    type: paid
+    price: '29.00'
+    currency: USD
+    billingPeriod: month
+    verified: false
+    description: 75,000 requests per day.
+    entries:
+      - label: API Requests
+        description: Daily request allowance
+        name: api_requests
+        type: quota
+        metric: requests
+        limit: 75000
+        timeFrame: day
+        geo: global
+        domains: []
+        unit: 1
+        price: '29.00'
+        userMultiplied: false
+    elements:
+      - name: All endpoints
+      - name: All competitions
+      - name: API-Football
+  - id: api-football-mega
+    name: Mega
+    type: paid
+    price: '39.00'
+    currency: USD
+    billingPeriod: month
+    verified: false
+    description: 150,000 requests per day.
+    entries:
+      - label: API Requests
+        description: Daily request allowance
+        name: api_requests
+        type: quota
+        metric: requests
+        limit: 150000
+        timeFrame: day
+        geo: global
+        domains: []
+        unit: 1
+        price: '39.00'
+        userMultiplied: false
+    elements:
+      - name: All endpoints
+      - name: All competitions
+      - name: API-Football
+higher_tiers:
+  note: >-
+    The pricing page advertises plans scaling to 1,500,000 requests per day above
+    the four named tiers. Their names and prices were not captured and are not
+    invented here.
+  max_advertised_requests_per_day: 1500000
+overage:
+  model: none-recorded
+  detail: >-
+    No overage or metered burst price was captured. The metering model observed
+    is a hard daily allowance rather than a billable overage.
+  verified: false
+alternate_channel:
+  name: RapidAPI
+  url: https://rapidapi.com/api-sports/api/api-football
+  detail: >-
+    API-Football is also sold through the RapidAPI hub against the edge host
+    api-football-v1.p.rapidapi.com. Marketplace plan names and prices are set on
+    RapidAPI and are NOT the same objects as the direct plans above; they were not
+    captured.
+evidence:
+  - url: https://www.api-football.com/pricing
+    status: 403
+    note: >-
+      cf-mitigated: challenge — the provider's pricing page is served to our
+      crawler as a Cloudflare managed challenge. Tier names, prices and daily
+      quotas above were recovered from search-engine extracts of that same
+      provider page and of the provider's own getting-started guide, and every
+      figure carries verified:false until a direct read succeeds.
+  - url: https://api-football-v1.p.rapidapi.com/v3/status
+    status: 401
+    note: confirms the RapidAPI resale channel is live
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - free
+  units:
+  - request
+  plans:
+  - name: Free
+    access: freemium
+    model: free
+    model_how: derived
+    units:
+    - request
+    periods:
+    - day
+  - name: Pro
+    access: paid
+    model: free
+    model_how: derived
+    units:
+    - request
+    periods:
+    - day
+  - name: Ultra
+    access: paid
+    model: free
+    model_how: derived
+    units:
+    - request
+    periods:
+    - day
+  - name: Mega
+    access: paid
+    model: free
+    model_how: derived
+    units:
+    - request
+    periods:
+    - day
